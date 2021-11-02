@@ -324,11 +324,11 @@ public abstract class Carta {
 
     public String toString() {
         String dados = "Nome: " + this.nome
-                + "Descrição: " + this.descricao
-                + "Tipo: " + this.tipo
-                + "Cor: " + cor.toString()
-                + "Decomposição: " + this.decomposicao
-                + "Ataque: " + this.ataque;
+                + "\nDescrição: " + this.descricao
+                + "\nTipo: " + this.tipo
+                + "\nCor: " + cor.toString()
+                + "\nDecomposição: " + this.decomposicao
+                + "\nAtaque: " + this.ataque;
         return dados;
     }
 
