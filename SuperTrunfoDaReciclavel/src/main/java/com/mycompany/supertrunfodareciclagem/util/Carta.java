@@ -1,4 +1,3 @@
-
 package com.mycompany.supertrunfodareciclagem.util;
 
 public abstract class Carta {
@@ -10,6 +9,16 @@ public abstract class Carta {
     private Cor cor;
     private Double decomposicao;
     private Integer ataque;
+    
+    public Carta(String[] dados) {
+        this.cod = dados[0];
+        this.nome = dados[1];
+        this.descricao = dados[2];
+        this.tipo = dados[3];
+        this.cor = Cor.stringToCor(dados[4]);
+        this.decomposicao = Double.parseDouble(dados[5]);
+        this.ataque = Integer.parseInt(dados[6]);
+    }
 
     public abstract boolean isReciclavel();
 
