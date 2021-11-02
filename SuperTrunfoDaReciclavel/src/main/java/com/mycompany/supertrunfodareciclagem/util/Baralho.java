@@ -52,12 +52,11 @@ public class Baralho {
 
     private boolean lerDoArquivo(){
         ArrayList<Carta> cartas = new ArrayList<>();
-
-        try ( BufferedReader leitor = new BufferedReader(new FileReader(new File(getClass().getResource("/com/mycompany/supertrunfodareciclagem/cartas.csv").getFile())))) {
+        try ( BufferedReader leitor = new BufferedReader(new FileReader(new File("src/resources/cartas.csv")))) {
             String linha;
             while ((linha = leitor.readLine()) != null) {
                 String[] dados = linha.split(";");
-                String reciclavel = dados[dados.length];
+                String reciclavel = dados[dados.length-1];
                 Carta carta;
                 if (reciclavel.equals("sim")) {
                     carta = new Reciclavel(dados);
