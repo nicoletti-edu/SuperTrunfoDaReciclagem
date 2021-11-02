@@ -10,7 +10,17 @@ public class Jogador {
 
     private String nome;
     private ArrayList<Carta> cartas = new ArrayList<Carta>();
+    
+    public Jogador(){
+        
+    }
+    public Jogador(String nome){
+        this.nome = nome;
+    }
 
+    public ArrayList<Carta> getCartas() {
+        return cartas;
+    }
     public String getNome() {
         return this.nome;
     }
