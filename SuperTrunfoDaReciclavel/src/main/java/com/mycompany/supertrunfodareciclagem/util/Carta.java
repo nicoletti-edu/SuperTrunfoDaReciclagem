@@ -323,7 +323,8 @@ public abstract class Carta {
     }
 
     public String toString() {
-        String dados = "Nome: " + this.nome
+        String dados = "Id: " + this.cod
+                + "\nNome: " + this.nome
                 + "\nDescrição: " + this.descricao
                 + "\nTipo: " + this.tipo
                 + "\nCor: " + cor.toString()
