@@ -5,6 +5,7 @@ import com.mycompany.supertrunfodareciclagem.util.Carta;
 import com.mycompany.supertrunfodareciclagem.util.Jogador;
 import com.mycompany.supertrunfodareciclagem.util.Status;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -16,9 +17,10 @@ import java.util.logging.Logger;
  */
 public class SuperTrunfoDaReciclagem {
 
-    Jogador[] jogadores;
-    static int turno;
-    static int proxJogador;
+    private Jogador[] jogadores;
+    private ArrayList<Carta> mesa;
+    private static int turno;
+    private static int proxJogador;
 
     public static void main(String[] args) {
         /*System.out.println("Iniciando jogo...\n");
@@ -33,9 +35,14 @@ public class SuperTrunfoDaReciclagem {
                 Logger.getLogger(SuperTrunfoDaReciclagem.class.getName()).log(Level.SEVERE, null, ex);
             }
         }*/
-
-        SuperTrunfoDaReciclagem str = new SuperTrunfoDaReciclagem();
-        while (str.jogadores.length > 1) {
+        int criterio;
+        boolean fimTurno;
+        SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem();
+        while (!jogo.isFim()) {
+            jogo.novaRodada();
+            criterio = jogo.escolhaDeCriterio();
+            jogo.faseDeCompra();
+            fimTurno = jogo.fimDoTurno(criterio);
         }
     }
 
@@ -55,16 +62,20 @@ public class SuperTrunfoDaReciclagem {
 
     /**
      *
-     * @return inicia o jogo, intanciando os jogadores e dividindo o baralho
-     * entre eles
+     * @return inicia o jogo, põe os jogadores em ordem de quem vai começar no
+     * primerio turno no vetor dividi o baralho entre eles e instancia as cartas
+     * que estarão na mesa entre eles
      *
      */
     public void inicia() {
         int nroJogador;
+        Random gerador = new Random();
+        int primeiroJogador = gerador.nextInt();
         Scanner sc = new Scanner(System.in);
         Baralho baralho = new Baralho();
         System.out.println("Quantos jogadores participarão? ");
         nroJogador = sc.nextInt();
+        primeiroJogador = gerador.nextInt(nroJogador);//decide aleatoriamente que vai ser o primeiro jogador
         this.jogadores = new Jogador[nroJogador];
 
         //Inicializa os jogadores
@@ -72,7 +83,13 @@ public class SuperTrunfoDaReciclagem {
             String nome;
             System.out.println("Insira o nome do jogador " + (i + 1));
             nome = sc.next();
-            jogadores[i] = new Jogador(nome);
+            if (primeiroJogador < nroJogador) {
+                jogadores[primeiroJogador] = new Jogador(nome);
+            } else {
+                primeiroJogador = 0;
+                jogadores[primeiroJogador] = new Jogador(nome);
+            }
+            primeiroJogador++;
         }
         this.turno = 0;
 
@@ -85,20 +102,18 @@ public class SuperTrunfoDaReciclagem {
         sc.close();
     }
 
-    public Carta novaRodada() {
+    //O primeiro jogador puxa a carta e olha os atributos
+    public void novaRodada() {
         if (turno == 0) {
-            Carta c = jogadores[proxJogador].excluir();
-            System.out.println("Carta do jogado " + (proxJogador + 1) + " : \n");
-            System.out.println(c.toString());
-            turno++;
-            return c;
+            this.mesa.add(0,jogadores[0].excluir());
+            System.out.println("Carta do jogador 1 : \n");
+            System.out.println(mesa.get(0));
         } else {
-            Carta c = jogadores[proxJogador].excluir();
-            System.out.println("Carta do jogado " + (proxJogador + 1) + " : \n");
-            System.out.println(c.toString());
-            turno++;
-            return c;
+            this.mesa.add(proxJogador, jogadores[proxJogador].excluir());
+            System.out.println("Carta do jogador " + (proxJogador + 1) + " : \n");
+            System.out.println(mesa.get(proxJogador).toString());
         }
+        turno++;
     }
 
     public int escolhaDeCriterio() {
@@ -114,5 +129,123 @@ public class SuperTrunfoDaReciclagem {
         } while (0 < escolha && escolha < 5);
         sc.close();
         return escolha;
+    }
+
+    //Outros jogadores compram a carta e "põe na mesa virado para baixo
+    public void faseDeCompra() {
+        for (int i = 0; i < this.jogadores.length - 1; i++) {
+            if (proxJogador < this.jogadores.length) {
+                this.mesa.add(jogadores[proxJogador].excluir());
+            } else {
+                proxJogador = 0;
+                this.mesa.add(jogadores[proxJogador].excluir());
+            }
+            proxJogador++;
+        }
+        //Seta na posicao do primeiro Jogador
+        if (proxJogador < this.jogadores.length) {
+            proxJogador++;
+        } else {
+            proxJogador = 0;
+        }
+    }
+
+    public Jogador[] getJogadores() {
+        return jogadores;
+    }
+
+    public void setJogadores(Jogador[] jogadores) {
+        this.jogadores = jogadores;
+    }
+
+    public static int getTurno() {
+        return turno;
+    }
+
+    public static void setTurno(int turno) {
+        SuperTrunfoDaReciclagem.turno = turno;
+    }
+
+    public static int getProxJogador() {
+        return proxJogador;
+    }
+
+    private boolean isFim() {
+        boolean ret = false;
+        for (int i = 0; i < this.jogadores.length; i++) {
+            ret = ret ^ this.jogadores[i].temCartas(); //xor entre jogadores, se houver mais de um que tenha o baralho retornará false
+        }
+        return ret;
+    }
+
+    private boolean fimDoTurno(int criterio) {
+        boolean fim = true;
+        Status resultado;
+        int indiceVencedor = 0;
+        switch (criterio) {
+            case 1:
+                for (int i = 0; i < this.jogadores.length - 1; i++) {
+                    resultado = mesa.get(i).critCor(mesa.get(i+1));
+                    if (resultado.equals(Status.PERDE)) {
+                        if (resultado.equals(Status.PERDE)) {
+                            if ((indiceVencedor = i + 1) >= this.jogadores.length) {
+                                indiceVencedor = 0;
+                            }
+                        } else if (resultado.equals(Status.GANHA)) {
+                            indiceVencedor = i;
+                        } else {
+                            fim = false;
+                        }
+                    }
+                }
+                break;
+            case 2:
+                for (int i = 0; i < this.jogadores.length - 1; i++) {
+                    resultado = mesa.get(i).critCor(mesa.get(i+1));
+                    if (resultado.equals(Status.PERDE)) {
+                        if (resultado.equals(Status.PERDE)) {
+                            if ((indiceVencedor = i + 1) >= this.jogadores.length) {
+                                indiceVencedor = 0;
+                            }
+                        } else if (resultado.equals(Status.GANHA)) {
+                            indiceVencedor = i;
+                        } else {
+                            fim = false;
+                        }
+                    }
+                }
+                break;
+            case 3:
+                for (int i = 0; i < this.jogadores.length - 1; i++) {
+                    resultado = mesa.get(i).critCor(mesa.get(i+1));
+                    if (resultado.equals(Status.PERDE)) {
+                        if (resultado.equals(Status.PERDE)) {
+                            if ((indiceVencedor = i + 1) >= this.jogadores.length) {
+                                indiceVencedor = 0;
+                            }
+                        } else if (resultado.equals(Status.GANHA)) {
+                            indiceVencedor = i;
+                        } else {
+                            fim = false;
+                        }
+                    }
+                }
+                break;
+            case 4:
+                for (int i = 0; i < this.jogadores.length - 1; i++) {
+                    resultado = mesa.get(i).critCor(mesa.get(i+1));
+                    if (resultado.equals(Status.PERDE)) {
+                        if ((indiceVencedor = i + 1) >= this.jogadores.length) {
+                            indiceVencedor = 0;
+                        }
+                    } else if (resultado.equals(Status.GANHA)) {
+                        indiceVencedor = i;
+                    } else {
+                        fim = false;
+                    }
+                }
+        }
+        proxJogador = indiceVencedor;
+        return fim;
     }
 }
