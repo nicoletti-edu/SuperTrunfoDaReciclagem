@@ -3,6 +3,7 @@ package com.mycompany.supertrunfodareciclagem.main;
 import com.mycompany.supertrunfodareciclagem.util.Baralho;
 import com.mycompany.supertrunfodareciclagem.util.Carta;
 import com.mycompany.supertrunfodareciclagem.util.Jogador;
+import com.mycompany.supertrunfodareciclagem.util.Reciclavel;
 import com.mycompany.supertrunfodareciclagem.util.Status;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class SuperTrunfoDaReciclagem {
     private ArrayList<Carta> mesa;
     private static int turno;
     private static int proxJogador;
+    private ArrayList<Integer> jogadoresEmpatados;
 
     public static void main(String[] args) {
         /*System.out.println("Iniciando jogo...\n");
@@ -36,13 +38,19 @@ public class SuperTrunfoDaReciclagem {
             }
         }*/
         int criterio;
-        boolean fimTurno;
+        boolean fimDoJogo;
         SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem();
         while (!jogo.isFim()) {
             jogo.novaRodada();
             criterio = jogo.escolhaDeCriterio();
             jogo.faseDeCompra();
-            fimTurno = jogo.fimDoTurno(criterio);
+            jogo.fasePrincipal(criterio);
+            jogo.faseRevelacao();
+            fimDoJogo = jogo.isFImDoTurno();
+            while (!fimDoJogo) {
+                jogo.desempate();
+                fimDoJogo = jogo.isFImDoTurno();
+            }
         }
     }
 
@@ -105,7 +113,7 @@ public class SuperTrunfoDaReciclagem {
     //O primeiro jogador puxa a carta e olha os atributos
     public void novaRodada() {
         if (turno == 0) {
-            this.mesa.add(0,jogadores[0].excluir());
+            this.mesa.add(0, jogadores[0].excluir());
             System.out.println("Carta do jogador 1 : \n");
             System.out.println(mesa.get(0));
         } else {
@@ -178,22 +186,29 @@ public class SuperTrunfoDaReciclagem {
         return ret;
     }
 
-    private boolean fimDoTurno(int criterio) {
+    //Fase que faz comparação entre as cartas
+    private void fasePrincipal(int criterio) {
         boolean fim = true;
         Status resultado;
         int indiceVencedor = 0;
         switch (criterio) {
             case 1:
                 for (int i = 0; i < this.jogadores.length - 1; i++) {
-                    resultado = mesa.get(i).critCor(mesa.get(i+1));
-                    if (resultado.equals(Status.PERDE)) {
-                        if (resultado.equals(Status.PERDE)) {
+                    resultado = mesa.get(i).critCor(mesa.get(i + 1));
+                    if (resultado == Status.PERDE) {
+                        if (resultado == Status.PERDE) {
                             if ((indiceVencedor = i + 1) >= this.jogadores.length) {
                                 indiceVencedor = 0;
                             }
-                        } else if (resultado.equals(Status.GANHA)) {
+                        } else if (resultado == Status.GANHA) {
                             indiceVencedor = i;
                         } else {
+                            if(!jogadoresEmpatados.contains(i)){
+                                jogadoresEmpatados.add(i);
+                            }
+                            if(!jogadoresEmpatados.contains(i+1)){
+                                jogadoresEmpatados.add(i);
+                            }
                             fim = false;
                         }
                     }
@@ -201,15 +216,21 @@ public class SuperTrunfoDaReciclagem {
                 break;
             case 2:
                 for (int i = 0; i < this.jogadores.length - 1; i++) {
-                    resultado = mesa.get(i).critCor(mesa.get(i+1));
+                    resultado = mesa.get(i).critCor(mesa.get(i + 1));
                     if (resultado.equals(Status.PERDE)) {
                         if (resultado.equals(Status.PERDE)) {
                             if ((indiceVencedor = i + 1) >= this.jogadores.length) {
                                 indiceVencedor = 0;
                             }
-                        } else if (resultado.equals(Status.GANHA)) {
+                        } else if (resultado == Status.GANHA) {
                             indiceVencedor = i;
                         } else {
+                            if(!jogadoresEmpatados.contains(i)){
+                                jogadoresEmpatados.add(i);
+                            }
+                            if(!jogadoresEmpatados.contains(i+1)){
+                                jogadoresEmpatados.add(i);
+                            }
                             fim = false;
                         }
                     }
@@ -217,15 +238,21 @@ public class SuperTrunfoDaReciclagem {
                 break;
             case 3:
                 for (int i = 0; i < this.jogadores.length - 1; i++) {
-                    resultado = mesa.get(i).critCor(mesa.get(i+1));
+                    resultado = mesa.get(i).critCor(mesa.get(i + 1));
                     if (resultado.equals(Status.PERDE)) {
-                        if (resultado.equals(Status.PERDE)) {
+                        if (resultado == Status.PERDE) {
                             if ((indiceVencedor = i + 1) >= this.jogadores.length) {
                                 indiceVencedor = 0;
                             }
-                        } else if (resultado.equals(Status.GANHA)) {
+                        } else if (resultado == Status.GANHA) {
                             indiceVencedor = i;
                         } else {
+                            if(!jogadoresEmpatados.contains(i)){
+                                jogadoresEmpatados.add(i);
+                            }
+                            if(!jogadoresEmpatados.contains(i+1)){
+                                jogadoresEmpatados.add(i);
+                            }
                             fim = false;
                         }
                     }
@@ -233,19 +260,133 @@ public class SuperTrunfoDaReciclagem {
                 break;
             case 4:
                 for (int i = 0; i < this.jogadores.length - 1; i++) {
-                    resultado = mesa.get(i).critCor(mesa.get(i+1));
-                    if (resultado.equals(Status.PERDE)) {
+                    resultado = mesa.get(i).critCor(mesa.get(i + 1));
+                    if (resultado == Status.PERDE) {
                         if ((indiceVencedor = i + 1) >= this.jogadores.length) {
                             indiceVencedor = 0;
                         }
-                    } else if (resultado.equals(Status.GANHA)) {
+                    } else if (resultado == Status.GANHA) {
                         indiceVencedor = i;
                     } else {
+                        if(!jogadoresEmpatados.contains(i)){
+                                jogadoresEmpatados.add(i);
+                            }
+                            if(!jogadoresEmpatados.contains(i+1)){
+                                jogadoresEmpatados.add(i);
+                            }
                         fim = false;
                     }
                 }
         }
-        proxJogador = indiceVencedor;
-        return fim;
+        if(jogadoresEmpatados.size() == 0){
+            proxJogador = indiceVencedor;
+        }
+    }
+
+    private boolean isFImDoTurno() {
+        if (this.jogadoresEmpatados.size() == 0) {
+            return true;
+        } else { 
+            return false;
+        }
+    }
+
+    public void desempate() {
+        int criterio;
+        Status resultado;
+        Carta c = jogadores[jogadoresEmpatados.get(0)].excluir();
+        mesa.add(c);
+        System.out.println(c.toString());
+        criterio = this.escolhaDeCriterio();
+        int indiceVencedor = 0;
+        switch (criterio) {
+            case 1:
+                for (int i = 0; i < this.jogadores.length - 1; i++) {
+                    resultado = mesa.get(i).critCor(mesa.get(i + 1));
+                    if (resultado == Status.PERDE) {
+                        if (resultado == Status.PERDE) {
+                            if ((indiceVencedor = i + 1) >= this.jogadores.length) {
+                                indiceVencedor = 0;
+                            }
+                        } else if (resultado == Status.GANHA) {
+                            indiceVencedor = i;
+                        } else {
+                            if(!jogadoresEmpatados.contains(i)){
+                                jogadoresEmpatados.add(i);
+                            }
+                            if(!jogadoresEmpatados.contains(i+1)){
+                                jogadoresEmpatados.add(i);
+                            }
+                        }
+                    }
+                }
+                break;
+            case 2:
+                for (int i = 0; i < this.jogadores.length - 1; i++) {
+                    resultado = mesa.get(i).critCor(mesa.get(i + 1));
+                    if (resultado.equals(Status.PERDE)) {
+                        if (resultado.equals(Status.PERDE)) {
+                            if ((indiceVencedor = i + 1) >= this.jogadores.length) {
+                                indiceVencedor = 0;
+                            }
+                        } else if (resultado == Status.GANHA) {
+                            indiceVencedor = i;
+                        } else {
+                            if(!jogadoresEmpatados.contains(i)){
+                                jogadoresEmpatados.add(i);
+                            }
+                            if(!jogadoresEmpatados.contains(i+1)){
+                                jogadoresEmpatados.add(i);
+                            }
+                        }
+                    }
+                }
+                break;
+            case 3:
+                for (int i = 0; i < this.jogadores.length - 1; i++) {
+                    resultado = mesa.get(i).critCor(mesa.get(i + 1));
+                    if (resultado.equals(Status.PERDE)) {
+                        if (resultado == Status.PERDE) {
+                            if ((indiceVencedor = i + 1) >= this.jogadores.length) {
+                                indiceVencedor = 0;
+                            }
+                        } else if (resultado == Status.GANHA) {
+                            indiceVencedor = i;
+                        } else {
+                            if(!jogadoresEmpatados.contains(i)){
+                                jogadoresEmpatados.add(i);
+                            }
+                            if(!jogadoresEmpatados.contains(i+1)){
+                                jogadoresEmpatados.add(i);
+                            }
+                        }
+                    }
+                }
+                break;
+            case 4:
+                for (int i = 0; i < this.jogadores.length - 1; i++) {
+                    resultado = mesa.get(i).critCor(mesa.get(i + 1));
+                    if (resultado == Status.PERDE) {
+                        if ((indiceVencedor = i + 1) >= this.jogadores.length) {
+                            indiceVencedor = 0;
+                        }
+                    } else if (resultado == Status.GANHA) {
+                        indiceVencedor = i;
+                    } else {
+                        if(!jogadoresEmpatados.contains(i)){
+                                jogadoresEmpatados.add(i);
+                            }
+                            if(!jogadoresEmpatados.contains(i+1)){
+                                jogadoresEmpatados.add(i);
+                            }
+                    }
+                }
+        }
+        if(jogadoresEmpatados.size() == 0){
+            proxJogador = indiceVencedor;
+        }
+    }
+
+    private void faseRevelacao() {
     }
 }
