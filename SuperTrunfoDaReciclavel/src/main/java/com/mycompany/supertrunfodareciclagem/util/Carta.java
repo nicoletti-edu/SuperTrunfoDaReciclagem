@@ -294,7 +294,7 @@ public abstract class Carta {
         }
     }
 
-    public Status criReciclavel(Carta c) {
+    public Status critReciclavel(Carta c) {
         if (this.isReciclavel()) {
             if (c.isReciclavel()) {
                 return Status.EMPATA;
@@ -310,7 +310,7 @@ public abstract class Carta {
         }
     }
 
-    public Status critSAtaque(Carta c) {
+    public Status critAtaque(Carta c) {
         if (this.ataque.equals(c.getAtaque())) {
             return Status.EMPATA;
         } else {
