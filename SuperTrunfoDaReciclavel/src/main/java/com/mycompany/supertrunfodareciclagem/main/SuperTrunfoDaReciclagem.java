@@ -41,16 +41,16 @@ public class SuperTrunfoDaReciclagem {
         int criterio;
         boolean fimDoJogo;
         SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem();
-        //while (!jogo.isFim()) {
-        jogo.novaRodada();
-        jogo.faseDeCompra();
-        jogo.faseRevelacao();
-        criterio = jogo.escolhaDeCriterio();
-        jogo.fasePrincipal(criterio);
-        jogo.desempate();
-        jogo.fimDoTurno();
-        
-        //}
+        while (!jogo.isFim()) {
+            jogo.novaRodada();
+            jogo.faseDeCompra();
+            criterio = jogo.escolhaDeCriterio();
+            jogo.fasePrincipal(criterio);
+            jogo.faseRevelacao();
+            jogo.desempate();
+            jogo.fimDoTurno();
+
+        }
     }
 
     public SuperTrunfoDaReciclagem() {
@@ -153,8 +153,8 @@ public class SuperTrunfoDaReciclagem {
         int indiceVencedor = 0;
         switch (criterio) {
             case 1:
-                resultado = mesa.get(i).critCor(mesa.get(i+1));
-                 if (resultado == Status.PERDE) {
+                resultado = mesa.get(i).critCor(mesa.get(i + 1));
+                if (resultado == Status.PERDE) {
                     indiceVencedor = 1;
                 } else if (resultado == Status.GANHA) {
                     indiceVencedor = 0;
@@ -164,8 +164,8 @@ public class SuperTrunfoDaReciclagem {
 
                 break;
             case 2:
-                resultado = mesa.get(i).critDecoposicao(mesa.get(i+1));
-                 if (resultado == Status.PERDE) {
+                resultado = mesa.get(i).critDecoposicao(mesa.get(i + 1));
+                if (resultado == Status.PERDE) {
                     indiceVencedor = 1;
                 } else if (resultado == Status.GANHA) {
                     indiceVencedor = 0;
@@ -175,8 +175,8 @@ public class SuperTrunfoDaReciclagem {
 
                 break;
             case 3:
-                resultado = mesa.get(i).critReciclavel(mesa.get(i+1));
-                 if (resultado == Status.PERDE) {
+                resultado = mesa.get(i).critReciclavel(mesa.get(i + 1));
+                if (resultado == Status.PERDE) {
                     indiceVencedor = 1;
                 } else if (resultado == Status.GANHA) {
                     indiceVencedor = 0;
@@ -186,8 +186,8 @@ public class SuperTrunfoDaReciclagem {
 
                 break;
             case 4:
-                resultado = mesa.get(i).critAtaque(mesa.get(i+1));
-                 if (resultado == Status.PERDE) {
+                resultado = mesa.get(i).critAtaque(mesa.get(i + 1));
+                if (resultado == Status.PERDE) {
                     indiceVencedor = 1;
                 } else if (resultado == Status.GANHA) {
                     indiceVencedor = 0;
@@ -225,7 +225,7 @@ public class SuperTrunfoDaReciclagem {
 
     private void fimDoTurno() {
         Jogador j = jogadores[proxJogador];
-        for(Carta c : mesa){
+        for (Carta c : mesa) {
             j.setCarta(c);
             mesa.remove(c);
         }
