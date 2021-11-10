@@ -3,14 +3,10 @@ package com.mycompany.supertrunfodareciclagem.main;
 import com.mycompany.supertrunfodareciclagem.util.Baralho;
 import com.mycompany.supertrunfodareciclagem.util.Carta;
 import com.mycompany.supertrunfodareciclagem.util.Jogador;
-import com.mycompany.supertrunfodareciclagem.util.Reciclavel;
 import com.mycompany.supertrunfodareciclagem.util.Status;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -18,46 +14,33 @@ import java.util.logging.Logger;
  */
 public class SuperTrunfoDaReciclagem {
 
-    private Scanner sc;
+    private final Scanner sc = new Scanner(System.in);
     private Jogador[] jogadores;
     private ArrayList<Carta> mesa;
     private int turno;
     private int proxJogador;
     private boolean jogadoresEmpatados;
 
-    public static void main(String[] args) {
-        /*System.out.println("Iniciando jogo...\n");
-        System.out.println("Teste 1 - Sacando Cartas\n");
-        Baralho baralho = new Baralho();
-        for (int i = 0; i < 32; i++) {
-            System.out.println(baralho.selecionaCarta().toString() + "\n");
-            System.out.println("Pressione enter para próxima carta!\n");
-            try {
-                System.in.read();
-            } catch (IOException ex) {
-                Logger.getLogger(SuperTrunfoDaReciclagem.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }*/
-        int criterio;
-        boolean fimDoJogo;
-        SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem();
-        while (!jogo.isFim()) {
-            jogo.novaRodada();
-            jogo.faseDeCompra();
-            criterio = jogo.escolhaDeCriterio();
-            jogo.fasePrincipal(criterio);
-            jogo.faseRevelacao();
-            jogo.desempate();
-            jogo.fimDoTurno();
-
-        }
-    }
+//    public static void main(String[] args) {
+//        int criterio;
+//        boolean fimDoJogo;
+//        SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem();
+//        while (!jogo.isFim()) {
+//            jogo.novaRodada();
+//            jogo.faseDeCompra();
+//            criterio = jogo.escolhaDeCriterio();
+//            jogo.fasePrincipal(criterio);
+//            jogo.faseRevelacao();
+//            jogo.desempate();
+//            jogo.fimDoTurno();
+//
+//        }
+//    }
 
     public SuperTrunfoDaReciclagem() {
-        this.sc = new Scanner(System.in);
         turno = 0;
         proxJogador = 0;
-        mesa = new ArrayList<Carta>();
+        mesa = new ArrayList<>();
         inicia();
 
         //printa as cartas dos jogadores
@@ -71,7 +54,7 @@ public class SuperTrunfoDaReciclagem {
 
     /**
      *
-     * @return inicia o jogo, põe os jogadores em ordem de quem vai começar no
+     * Inicia o jogo, põe os jogadores em ordem de quem vai começar no
      * primerio turno no vetor dividi o baralho entre eles e instancia as cartas
      * que estarão na mesa entre eles
      *
@@ -104,7 +87,7 @@ public class SuperTrunfoDaReciclagem {
         //Partilha o baralho entre os jogadores
         for (int i = 0; i < nroJogador; i++) {
             for (int j = 0; (32 / nroJogador) > j; j++) {
-                this.jogadores[i].setCarta(baralho.selecionaCarta());
+                this.jogadores[i].adicionaCarta(baralho.selecionaCarta());
             }
         }
     }
@@ -113,7 +96,7 @@ public class SuperTrunfoDaReciclagem {
     public void novaRodada() {
         this.turno++;
         System.out.println("**** Início do turno: " + this.turno + " ****");
-        this.mesa.add(proxJogador, jogadores[proxJogador].excluir());
+        this.mesa.add(proxJogador, jogadores[proxJogador].sacarCarta());
         System.out.println("Carta do jogador " + (proxJogador + 1) + " : \n");
         System.out.println(mesa.get(proxJogador).toString());
 
@@ -133,7 +116,7 @@ public class SuperTrunfoDaReciclagem {
     public void faseDeCompra() {
         for (int i = 0; i < jogadores.length; i++) {
             if (i != this.proxJogador) {
-                mesa.add(jogadores[i].excluir());
+                mesa.add(jogadores[i].sacarCarta());
             }
         }
     }
@@ -214,7 +197,7 @@ public class SuperTrunfoDaReciclagem {
     private void desempate() {
         while (this.jogadoresEmpatados) {
             System.out.println("**** DESEMPATE ****");
-            this.mesa.add(proxJogador, jogadores[proxJogador].excluir());
+            this.mesa.add(proxJogador, jogadores[proxJogador].sacarCarta());
             System.out.println("Carta do jogador " + (proxJogador + 1) + " : \n");
             System.out.println(mesa.get(proxJogador).toString());
             this.faseDeCompra();
@@ -226,7 +209,7 @@ public class SuperTrunfoDaReciclagem {
     private void fimDoTurno() {
         Jogador j = jogadores[proxJogador];
         for (Carta c : mesa) {
-            j.setCarta(c);
+            j.adicionaCarta(c);
             mesa.remove(c);
         }
     }
