@@ -37,7 +37,10 @@ public class Jogador {
 
     public Carta sacarCarta() {
         if (this.temCartas()) {
-            return this.cartas.get(0);
+            Carta c = this.cartas.get(0);
+            this.cartas.remove(c);
+            return c;
+            
         }
         return null;
     }
