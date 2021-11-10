@@ -9,42 +9,40 @@ import java.util.ArrayList;
 public class Jogador {
 
     private String nome;
-    private ArrayList<Carta> cartas = new ArrayList<Carta>();
-    
-    public Jogador(){
-        
+    private ArrayList<Carta> cartas = new ArrayList<>();
+
+    public Jogador() {
+
     }
-    public Jogador(String nome){
+
+    public Jogador(String nome) {
         this.nome = nome;
     }
 
     public ArrayList<Carta> getCartas() {
         return cartas;
     }
+
     public String getNome() {
         return this.nome;
     }
 
-    public int getNumeroDeCartas() {
+    public int numeroDeCartas() {
         return cartas.size();
     }
 
-    public void setCarta(Carta carta) {
+    public void adicionaCarta(Carta carta) {
         this.cartas.add(carta);
     }
 
-    public Carta excluir() {
-        Carta c = null;
+    public Carta sacarCarta() {
         if (this.temCartas()) {
-            c = cartas.get(0);
+            return this.cartas.get(0);
         }
-        return c;
+        return null;
     }
 
     public boolean temCartas() {
-        if (cartas.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !cartas.isEmpty();
     }
 }
