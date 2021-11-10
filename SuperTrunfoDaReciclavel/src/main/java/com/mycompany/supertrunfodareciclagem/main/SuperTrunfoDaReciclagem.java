@@ -20,24 +20,25 @@ public class SuperTrunfoDaReciclagem {
     private int turno;
     private int proxJogador;
     private boolean jogadoresEmpatados;
+    private Random gerador;
 
-//    public static void main(String[] args) {
-//        int criterio;
-//        boolean fimDoJogo;
-//        SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem();
-//        while (!jogo.isFim()) {
-//            jogo.novaRodada();
-//            jogo.faseDeCompra();
-//            criterio = jogo.escolhaDeCriterio();
-//            jogo.fasePrincipal(criterio);
-//            jogo.faseRevelacao();
-//            jogo.desempate();
-//            jogo.fimDoTurno();
-//
-//        }
-//    }
+    public static void main(String[] args) {
+        int criterio;
+        boolean fimDoJogo;
+        SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem();
+        while (!jogo.isFim()) {
+            jogo.novaRodada();
+            criterio = jogo.escolhaDeCriterio();
+            jogo.fasePrincipal(criterio);
+            jogo.faseRevelacao();
+            jogo.desempate();
+            jogo.fimDoTurno();
+
+        }
+    }
 
     public SuperTrunfoDaReciclagem() {
+        gerador = new Random();
         turno = 0;
         proxJogador = 0;
         mesa = new ArrayList<>();
@@ -54,14 +55,13 @@ public class SuperTrunfoDaReciclagem {
 
     /**
      *
-     * Inicia o jogo, põe os jogadores em ordem de quem vai começar no
-     * primerio turno no vetor dividi o baralho entre eles e instancia as cartas
-     * que estarão na mesa entre eles
+     * Inicia o jogo, põe os jogadores em ordem de quem vai começar no primerio
+     * turno no vetor dividi o baralho entre eles e instancia as cartas que
+     * estarão na mesa entre eles
      *
      */
     public void inicia() {
         int nroJogador;
-        Random gerador = new Random();
         int primeiroJogador = gerador.nextInt();
         Baralho baralho = new Baralho();
         System.out.println("Quantos jogadores participarão? ");
@@ -86,7 +86,7 @@ public class SuperTrunfoDaReciclagem {
 
         //Partilha o baralho entre os jogadores
         for (int i = 0; i < nroJogador; i++) {
-            for (int j = 0; (32 / nroJogador) > j; j++) {
+            for (int j = 0; Math.floor(32 / nroJogador) > j; j++) {
                 this.jogadores[i].adicionaCarta(baralho.selecionaCarta());
             }
         }
@@ -96,28 +96,32 @@ public class SuperTrunfoDaReciclagem {
     public void novaRodada() {
         this.turno++;
         System.out.println("**** Início do turno: " + this.turno + " ****");
-        this.mesa.add(proxJogador, jogadores[proxJogador].sacarCarta());
-        System.out.println("Carta do jogador " + (proxJogador + 1) + " : \n");
+        System.out.println("++++ Cartas dos jogadores: ");
+        for (Jogador j : jogadores) {
+            System.out.println("Nro da carta do jogador " + j.getNome() + " : " + j.numeroDeCartas());
+        }
+        this.faseDeCompra();
+        System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
         System.out.println(mesa.get(proxJogador).toString());
 
     }
 
     public int escolhaDeCriterio() {
         int escolha;
-        System.out.println("Que criteiro você quer escolher? \n");
+        System.out.println("Que criteiro você deseja escolher? \n");
         System.out.println("1.Cor\n");
         System.out.println("2.Decomposição.\n");
         System.out.println("3.Reciclavel.\n");
         System.out.println("4.Ataque.\n");
-        return escolha = sc.nextInt();
+        escolha = gerador.nextInt(3) + 1;
+        System.out.println("Criterio escolhido: " + escolha);
+        return escolha;
     }
 
     //Outros jogadores compram a carta e "põe na mesa virado para baixo
     public void faseDeCompra() {
         for (int i = 0; i < jogadores.length; i++) {
-            if (i != this.proxJogador) {
-                mesa.add(jogadores[i].sacarCarta());
-            }
+            mesa.add(jogadores[i].sacarCarta());
         }
     }
 
@@ -133,7 +137,7 @@ public class SuperTrunfoDaReciclagem {
     private void fasePrincipal(int criterio) {
         Status resultado = null;
         int i = jogadores.length - 2;
-        int indiceVencedor = 0;
+        int indiceVencedor = -1;
         switch (criterio) {
             case 1:
                 resultado = mesa.get(i).critCor(mesa.get(i + 1));
@@ -179,8 +183,9 @@ public class SuperTrunfoDaReciclagem {
                 }
                 break;
         }
-        if (!this.jogadoresEmpatados) {
+        if (indiceVencedor != -1) {
             proxJogador = indiceVencedor;
+            this.jogadoresEmpatados = false;
         }
         if (resultado != null) {
             System.out.println(resultado.toString());
@@ -189,20 +194,22 @@ public class SuperTrunfoDaReciclagem {
 
     private void faseRevelacao() {
         int i = jogadores.length - 1;
-        Carta c = mesa.get(i);
-        System.out.println("Cartas do Jogador 2: ");
-        System.out.println(c.toString());
+        for (Carta c : mesa) {
+            if (i != proxJogador && i >= 0) {
+                System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + c.toString());
+            }
+            i--;
+        }
     }
 
     private void desempate() {
         while (this.jogadoresEmpatados) {
-            System.out.println("**** DESEMPATE ****");
-            this.mesa.add(proxJogador, jogadores[proxJogador].sacarCarta());
-            System.out.println("Carta do jogador " + (proxJogador + 1) + " : \n");
-            System.out.println(mesa.get(proxJogador).toString());
             this.faseDeCompra();
-            this.faseRevelacao();
+            System.out.println("**** DESEMPATE ****");
+            System.out.println("Carta do jogador " + jogadores[proxJogador] + " : \n");
+            System.out.println(mesa.get(proxJogador).toString());
             this.fasePrincipal(this.escolhaDeCriterio());
+            this.faseRevelacao();
         }
     }
 
@@ -210,7 +217,7 @@ public class SuperTrunfoDaReciclagem {
         Jogador j = jogadores[proxJogador];
         for (Carta c : mesa) {
             j.adicionaCarta(c);
-            mesa.remove(c);
         }
+        mesa.removeAll(mesa);
     }
 }
