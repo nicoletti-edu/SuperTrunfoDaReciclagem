@@ -230,12 +230,8 @@ public class SuperTrunfoDaReciclagem {
         int i = mesa.size() - 2;
         int indiceVencedor = -1;
         try {
-            System.out.println("numero da mesa: " + mesa.size());
             switch (criterio) {
                 case 1:
-                    if (mesa.get(i) == null || mesa.get(i + 1) == null) {
-                        System.out.println("aqui");
-                    }
                     resultado = mesa.get(i).critCor(mesa.get(i + 1));
                     if (resultado == Status.EMPATA) {
                         this.jogadoresEmpatados = true;
@@ -253,9 +249,6 @@ public class SuperTrunfoDaReciclagem {
                     break;
 
                 case 2:
-                    if (mesa.get(i) == null || mesa.get(i + 1) == null) {
-                        System.out.println("aqui");
-                    }
                     resultado = mesa.get(i).critDecoposicao(mesa.get(i + 1));
                     if (resultado == Status.EMPATA) {
                         this.jogadoresEmpatados = true;
@@ -272,9 +265,6 @@ public class SuperTrunfoDaReciclagem {
                     break;
 
                 case 3:
-                    if (mesa.get(i) == null || mesa.get(i + 1) == null) {
-                        System.out.println("aqui");
-                    }
                     resultado = mesa.get(i).critReciclavel(mesa.get(i + 1));
                     if (resultado == Status.EMPATA) {
                         this.jogadoresEmpatados = true;
@@ -291,9 +281,6 @@ public class SuperTrunfoDaReciclagem {
                     break;
 
                 case 4:
-                    if (mesa.get(i) == null || mesa.get(i + 1) == null) {
-                        System.out.println("aqui");
-                    }
                     resultado = mesa.get(i).critAtaque(mesa.get(i + 1));
                     if (resultado == Status.EMPATA) {
                         this.jogadoresEmpatados = true;
