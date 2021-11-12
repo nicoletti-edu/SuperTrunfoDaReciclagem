@@ -230,12 +230,8 @@ public class SuperTrunfoDaReciclagem {
         int i = mesa.size() - 2;
         int indiceVencedor = -1;
         try {
-            System.out.println("numero da mesa: " + mesa.size());
             switch (criterio) {
                 case 1:
-                    if (mesa.get(i) == null || mesa.get(i + 1) == null) {
-                        System.out.println("aqui");
-                    }
                     resultado = mesa.get(i).critCor(mesa.get(i + 1));
                     if (resultado == Status.EMPATA) {
                         this.jogadoresEmpatados = true;
@@ -253,9 +249,6 @@ public class SuperTrunfoDaReciclagem {
                     break;
 
                 case 2:
-                    if (mesa.get(i) == null || mesa.get(i + 1) == null) {
-                        System.out.println("aqui");
-                    }
                     resultado = mesa.get(i).critDecoposicao(mesa.get(i + 1));
                     if (resultado == Status.EMPATA) {
                         this.jogadoresEmpatados = true;
@@ -272,9 +265,6 @@ public class SuperTrunfoDaReciclagem {
                     break;
 
                 case 3:
-                    if (mesa.get(i) == null || mesa.get(i + 1) == null) {
-                        System.out.println("aqui");
-                    }
                     resultado = mesa.get(i).critReciclavel(mesa.get(i + 1));
                     if (resultado == Status.EMPATA) {
                         this.jogadoresEmpatados = true;
@@ -291,9 +281,6 @@ public class SuperTrunfoDaReciclagem {
                     break;
 
                 case 4:
-                    if (mesa.get(i) == null || mesa.get(i + 1) == null) {
-                        System.out.println("aqui");
-                    }
                     resultado = mesa.get(i).critAtaque(mesa.get(i + 1));
                     if (resultado == Status.EMPATA) {
                         this.jogadoresEmpatados = true;
@@ -325,12 +312,12 @@ public class SuperTrunfoDaReciclagem {
 
     private void faseRevelacao() {
         System.out.println("------------------------------------------------------------------------Fase revelação------------------------------------------------------------------------");
-        int i = jogadores.length - 1;
-        for (Carta c : mesa) {
-            if (i != proxJogador && i >= 0) {
-                System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + c.toString());
+        int j = mesa.size() - jogadores.length; // pega as ultimas cartas do monte
+        for (int i = 0; i < jogadores.length; i++ ) {
+            if (i != proxJogador) {
+                System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + mesa.get(j).toString());
             }
-            i--;
+            j++;
         }
     }
 
@@ -349,9 +336,10 @@ public class SuperTrunfoDaReciclagem {
                 }
             }
             if (this.jogadoresEmpatados) {
+                int indice = mesa.size() - jogadores.length + proxJogador;
                 System.out.println("------------------------------------------------------------------------Desempate------------------------------------------------------------------------");
                 System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
-                System.out.println(mesa.get(proxJogador).toString());
+                System.out.println(mesa.get(indice).toString());
                 this.fasePrincipal(this.escolhaDeCriterio(), 1);
                 this.faseRevelacao();
             }
