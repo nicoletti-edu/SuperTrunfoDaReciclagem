@@ -104,7 +104,7 @@ public class SuperTrunfoDaReciclagem {
     //O primeiro jogador puxa a carta e olha os atributos
     public void novaRodada() {
         this.turno++;
-        System.out.println("------------------------------------------------------------------------ Turno "+this.turno+" ------------------------------------------------------------------------");
+        System.out.println("------------------------------------------------------------------------ Turno " + this.turno + " ------------------------------------------------------------------------");
         System.out.println("++++ Cartas dos jogadores: ****");
         for (Jogador j : jogadores) {
             System.out.println(j.getNome() + " : " + j.numeroDeCartas());
@@ -336,20 +336,35 @@ public class SuperTrunfoDaReciclagem {
 
     private void desempate() {
         while (this.jogadoresEmpatados) {
-            
+            int i;
             this.faseDeCompra();
-            System.out.println("------------------------------------------------------------------------Desempate------------------------------------------------------------------------");
-            System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
-            System.out.println(mesa.get(proxJogador).toString());
-            this.fasePrincipal(this.escolhaDeCriterio(), 1);
-            this.faseRevelacao();
+
+            for (i = 0; i < mesa.size(); i++) {
+                Carta c;
+                c = mesa.get(i);
+                if (c == null) {
+                    this.proxJogador = (i + 1) % jogadores.length;
+                    this.jogadoresEmpatados = false;
+                    break;
+                }
+            }
+            if (this.jogadoresEmpatados) {
+                System.out.println("------------------------------------------------------------------------Desempate------------------------------------------------------------------------");
+                System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
+                System.out.println(mesa.get(proxJogador).toString());
+                this.fasePrincipal(this.escolhaDeCriterio(), 1);
+                this.faseRevelacao();
+            }
+
         }
     }
 
     private void fimDoTurno() {
         Jogador j = jogadores[proxJogador];
         for (Carta c : mesa) {
-            j.adicionaCarta(c);
+            if (c != null) {
+                j.adicionaCarta(c);
+            }
         }
         mesa.removeAll(mesa);
     }
