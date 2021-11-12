@@ -67,7 +67,7 @@ public class SuperTrunfoDaReciclagem {
      */
     public void inicia() {
         int nroJogador;
-        int primeiroJogador = gerador.nextInt();
+        int primeiroJogador;
         System.out.println("------------------------------------------------------------------------Inicio do Jogo------------------------------------------------------------------------");
 
         Baralho baralho = new Baralho();
@@ -102,11 +102,10 @@ public class SuperTrunfoDaReciclagem {
     //O primeiro jogador puxa a carta e olha os atributos
     public void novaRodada() {
         this.turno++;
-        System.out.println("------------------------------------------------------------------------Nova rodada------------------------------------------------------------------------");
-        System.out.println("**** Início do turno: " + this.turno + " ****");
+        System.out.println("------------------------------------------------------------------------ Turno "+this.turno+" ------------------------------------------------------------------------");
         System.out.println("++++ Cartas dos jogadores: ****");
         for (Jogador j : jogadores) {
-            System.out.println("Nro da carta do jogador " + j.getNome() + " : " + j.numeroDeCartas());
+            System.out.println(j.getNome() + " : " + j.numeroDeCartas());
         }
         this.faseDeCompra();
         System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
