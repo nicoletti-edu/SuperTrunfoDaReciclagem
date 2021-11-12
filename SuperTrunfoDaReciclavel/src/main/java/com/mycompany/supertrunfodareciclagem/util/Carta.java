@@ -323,14 +323,51 @@ public abstract class Carta {
     }
 
     public String toString() {
-        String dados = "Id: " + this.cod
-                + "\nNome: " + this.nome
-                + "\nDescrição: " + this.descricao
-                + "\nTipo: " + this.tipo
-                + "\nCor: " + cor.toString()
-                + "\nDecomposição: " + this.decomposicao
-                + "\nAtaque: " + this.ataque;
+//        String dados = "Id: " + this.cod
+//                + "\nNome: " + this.nome
+//                + "\nDescrição: " + this.descricao
+//                + "\nTipo: " + this.tipo
+//                + "\nCor: " + cor.toString()
+//                + "\nDecomposição: " + this.decomposicao
+//                + "\nAtaque: " + this.ataque;
+        String dados = "|----------------------|\n"
+                + centralizaDescricao(this.cod)
+                + centralizaDescricao(this.nome)
+//                + centralizaDescricao(this.descricao)
+                + centralizaDescricao(this.tipo)
+                + centralizaDescricao(this.cor.toString())
+                + centralizaDescricao("Decomposição: " + this.decomposicao.toString())
+                + centralizaDescricao("Ataque: " + this.ataque.toString());
         return dados;
+    }
+    
+    public String centralizaDescricao(String conteudo){
+        StringBuilder sb = new StringBuilder(conteudo);
+        int larguraCarta = 23;
+        Double espacos = (larguraCarta - conteudo.length())/2.0;
+        espacos = Math.floor(espacos);
+        sb.insert(0, "|");
+        for (int i = 0; i < espacos; i++) {
+            sb.insert(1, " ");
+        }
+        for (int i = 0; i < espacos; i++) {
+            sb.append(" ");
+        }
+        sb.append("|\n");
+       return sb.toString();
     }
 
 }
+        
+        
+        
+
+//
+//|----------------------|
+//|       Cascana      E4|
+//|   aslkfjakslfjlkaf   |
+//| sjkadfhasfhjkfashja  |
+//| slkfjklfsjlkfjasklf  |
+//|      Tipo            |
+//|       Azul           |
+ 
