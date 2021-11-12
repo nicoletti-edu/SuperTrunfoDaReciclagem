@@ -23,6 +23,10 @@ public class Jogador {
         return cartas;
     }
 
+    public void setCartas(ArrayList<Carta> cartas) {
+        this.cartas = cartas;
+    }
+
     public String getNome() {
         return this.nome;
     }
