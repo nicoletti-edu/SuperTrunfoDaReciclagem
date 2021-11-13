@@ -1,6 +1,7 @@
 package com.mycompany.supertrunfodareciclagem.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class Carta {
 
@@ -65,7 +66,7 @@ public abstract class Carta {
         this.cor = Cor.stringToCor(c);
     }
 
-    public double getDecomposicao() {
+    public Double getDecomposicao() {
         return decomposicao;
     }
 
@@ -73,7 +74,7 @@ public abstract class Carta {
         this.decomposicao = decomposicao;
     }
 
-    public int getAtaque() {
+    public Integer getAtaque() {
         return ataque;
     }
 
@@ -287,7 +288,7 @@ public abstract class Carta {
                 return Status.PERDE;
             }
         } else {
-            if(this.decomposicao == null || c == null ){
+            if (this.decomposicao == null || c == null) {
                 System.out.println("aqui");
             }
             if (this.decomposicao < c.getDecomposicao()) {
@@ -301,9 +302,9 @@ public abstract class Carta {
     }
 
     public Status critReciclavel(Carta c) {
-        if( c == null ){
-                System.out.println("aqui");
-            }
+        if (c == null) {
+            System.out.println("aqui");
+        }
         if (this.isReciclavel()) {
             if (c.isReciclavel()) {
                 return Status.EMPATA;
@@ -332,28 +333,21 @@ public abstract class Carta {
     }
 
     public String toString() {
-//        String dados = "Id: " + this.cod
-//                + "\nNome: " + this.nome
-//                + "\nDescrição: " + this.descricao
-//                + "\nTipo: " + this.tipo
-//                + "\nCor: " + cor.toString()
-//                + "\nDecomposição: " + this.decomposicao
-//                + "\nAtaque: " + this.ataque;
         String dados = linhaTopo()
                 + centralizaAtributos(this.cod)
                 + centralizaAtributos(this.nome)
-                //                + centralizaDescricao(this.descricao)
+                + centralizaDescricao(this.descricao)
                 + centralizaAtributos(this.tipo)
                 + centralizaAtributos(this.cor.toString())
                 + centralizaAtributos("Decomposição: " + this.decomposicao.toString())
                 + centralizaAtributos("Ataque: " + this.ataque.toString())
-                + linhaPe();
+                + linhaRodapé();
         return dados;
     }
 
-    private String linhaTopo() {
+    protected String linhaTopo() {
         StringBuilder sb = new StringBuilder(" ");
-        for (int i = 0; i < LARGURA-1; i++) {
+        for (int i = 0; i < LARGURA - 1; i++) {
             sb.append("_");
         }
         sb.append("\n|");
@@ -364,7 +358,7 @@ public abstract class Carta {
         return sb.toString();
     }
 
-    private String linhaPe() {
+    protected String linhaRodapé() {
         StringBuilder sb = new StringBuilder("|");
         for (int i = 0; i < LARGURA - 1; i++) {
             sb.append("_");
@@ -373,7 +367,12 @@ public abstract class Carta {
         return sb.toString();
     }
 
-    private String centralizaAtributos(String conteudo) {
+    /**
+     *
+     * @param conteudo Atributo da carta
+     * @return Linha da carta a ser impressa
+     */
+    protected String centralizaAtributos(String conteudo) {
         StringBuilder sb = new StringBuilder(conteudo);
         boolean par = conteudo.length() % 2 == 0;
         Double espacos = (LARGURA - conteudo.length()) / 2.0;
@@ -389,54 +388,46 @@ public abstract class Carta {
         return sb.toString();
     }
 
-//    private String centralizaDescricao(String descricao) {
-//        StringBuilder sb = new StringBuilder(descricao);
-//        int larguraCarta = 23;
-//        if (descricao.length() > larguraCarta) {
-//            ArrayList<String> linhas = separaString(larguraCarta, descricao);
-//            sb = new StringBuilder("");
-//            for (String linha : linhas) {
-//                sb.append(centralizaDescricao(linha));
-//            }
-//        } else {
-//            return centralizaAtributos(descricao);
-//        }
-//        return sb.toString();
-//    }
-//    private String centralizaDescricao(String descricao) {
-//        StringBuilder sb = new StringBuilder(descricao);
-//        int larguraCarta = 23;
-//        if (descricao.length() > larguraCarta) {
-//            ArrayList<String> palavras = new ArrayList<>(Arrays.asList(descricao.split(" ")));
-//            ArrayList<String> linhas = new ArrayList<>();
-//
-//            sb = new StringBuilder("");
-//            for (String linha : linhas) {
-//                sb.append(centralizaDescricao(linha));
-//            }
-//        } else {
-//            return centralizaAtributos(descricao);
-//        }
-//        return sb.toString();
-//    }
-    private ArrayList<String> separaString(int tamanho, String texto) {
-        int linhas = (int) Math.ceil(descricao.length() / tamanho);
+    /**
+     *
+     * @param descricao Descricao da carta
+     * @return Lista com a descricao separada em linhas para caber na carta
+     */
+    protected String centralizaDescricao(String descricao) {
+        StringBuilder sb = new StringBuilder("");
+        ArrayList<String> linhas = separaString(descricao);
+        linhas.forEach(linha -> {
+            sb.append(centralizaAtributos(linha));
+        });
+        return sb.toString();
+    }
+
+    private ArrayList<String> separaString(String texto) {
+        ArrayList<String> palavras = new ArrayList<>(Arrays.asList(texto.split(" ")));
+        ArrayList<String> palavrasARemover = new ArrayList<>();
         ArrayList<String> resultado = new ArrayList<>();
-        resultado.add(texto.substring(0, tamanho).trim());
-        for (int i = 1; i < linhas; i++) {
-            resultado.add(texto.substring(tamanho * i, ((tamanho * i) + tamanho) > texto.length() ? texto.length() : ((tamanho * i) + tamanho)).trim());
+        String linha = "";
+        while (!palavras.isEmpty()) {
+            for (String palavra : palavras) {
+                if ((palavra + " " + linha).length() <= LARGURA - 2) {
+                    linha += palavra + " ";
+                    palavrasARemover.add(palavra);
+                } else {
+                    resultado.add(linha);
+                    linha = "";
+                    break;
+                }
+            }
+            //Para quando sobra uma palavra na linha
+            if (!linha.equals("")) {
+                resultado.add(linha);
+            }
+            palavrasARemover.forEach(palavra -> {
+                palavras.remove(palavra);
+            });
+            palavrasARemover.clear();
         }
         return resultado;
     }
 
 }
-
-//
-//|----------------------|
-//|       Cascana      E4|
-//|   aslkfjakslfjlkaf   |
-//| sjkadfhasfhjkfashja  |
-//| slkfjklfsjlkfjasklf  |
-//|      Tipo            |
-//|       Azul           |
-
