@@ -1,5 +1,7 @@
 package com.mycompany.supertrunfodareciclagem.util;
 
+import java.util.ArrayList;
+
 public abstract class Carta {
 
     private String cod;
@@ -9,7 +11,8 @@ public abstract class Carta {
     private Cor cor;
     private Double decomposicao;
     private Integer ataque;
-    
+    private static final int LARGURA = 29; // TEM QUE SER IMPAR ;)
+
     public Carta(String[] dados) {
         this.cod = dados[0];
         this.nome = dados[1];
@@ -84,17 +87,17 @@ public abstract class Carta {
             //Perde se a Carta c for uma não reciclavel
             if (!c.isReciclavel()) {
                 return Status.PERDE;
-            //Ganha em outros casos, independente da cor
+                //Ganha em outros casos, independente da cor
             } else {
                 return Status.GANHA;
             }
-        //Se a carta for o SUPER PNEU    
-        }else if(this.cod.equals("H4")){
+            //Se a carta for o SUPER PNEU    
+        } else if (this.cod.equals("H4")) {
             //Ganha se a carta c for uma não reciclavel
-            if(!c.isReciclavel()){
+            if (!c.isReciclavel()) {
                 return Status.GANHA;
-            //Perde em outros casos
-            }else{
+                //Perde em outros casos
+            } else {
                 return Status.PERDE;
             }
         }
@@ -117,7 +120,7 @@ public abstract class Carta {
                         return Status.PERDE;
                 }
             case CINZA:
-                switch(c.getCor()){
+                switch (c.getCor()) {
                     case CINZA:
                         return Status.EMPATA;
                     case PRETO:
@@ -134,7 +137,7 @@ public abstract class Carta {
                         return Status.PERDE;
                 }
             case LARANJA:
-                switch(c.getCor()){
+                switch (c.getCor()) {
                     case LARANJA:
                         return Status.EMPATA;
                     case ROXO:
@@ -151,7 +154,7 @@ public abstract class Carta {
                         return Status.PERDE;
                 }
             case VERMELHO:
-                switch(c.getCor()){
+                switch (c.getCor()) {
                     case VERMELHO:
                         return Status.EMPATA;
                     case AMARELO:
@@ -168,7 +171,7 @@ public abstract class Carta {
                         return Status.PERDE;
                 }
             case AZUL:
-                switch(c.getCor()){
+                switch (c.getCor()) {
                     case AZUL:
                         return Status.EMPATA;
                     case VERMELHO:
@@ -185,7 +188,7 @@ public abstract class Carta {
                         return Status.PERDE;
                 }
             case AMARELO:
-                switch(c.getCor()){
+                switch (c.getCor()) {
                     case AMARELO:
                         return Status.EMPATA;
                     case VERDE:
@@ -202,7 +205,7 @@ public abstract class Carta {
                         return Status.PERDE;
                 }
             case MARROM:
-                switch(c.getCor()){
+                switch (c.getCor()) {
                     case MARROM:
                         return Status.EMPATA;
                     case CINZA:
@@ -219,7 +222,7 @@ public abstract class Carta {
                         return Status.PERDE;
                 }
             case ROXO:
-                switch(c.getCor()){
+                switch (c.getCor()) {
                     case ROXO:
                         return Status.EMPATA;
                     case AZUL:
@@ -236,7 +239,7 @@ public abstract class Carta {
                         return Status.PERDE;
                 }
             case BRANCO:
-                switch(c.getCor()){
+                switch (c.getCor()) {
                     case BRANCO:
                         return Status.EMPATA;
                     case ROXO:
@@ -253,7 +256,7 @@ public abstract class Carta {
                         return Status.PERDE;
                 }
             case PRETO:
-                switch(c.getCor()){
+                switch (c.getCor()) {
                     case PRETO:
                         return Status.EMPATA;
                     case AZUL:
@@ -273,7 +276,7 @@ public abstract class Carta {
                 return Status.INDEFINIDA;
         }
     }
- 
+
     public Status critDecoposicao(Carta c) {
         //Se a carta for mega Winner
         if (this.cod.equals("H3")) {
@@ -330,37 +333,97 @@ public abstract class Carta {
 //                + "\nCor: " + cor.toString()
 //                + "\nDecomposição: " + this.decomposicao
 //                + "\nAtaque: " + this.ataque;
-        String dados = "|----------------------|\n"
-                + centralizaDescricao(this.cod)
-                + centralizaDescricao(this.nome)
-//                + centralizaDescricao(this.descricao)
-                + centralizaDescricao(this.tipo)
-                + centralizaDescricao(this.cor.toString())
-                + centralizaDescricao("Decomposição: " + this.decomposicao.toString())
-                + centralizaDescricao("Ataque: " + this.ataque.toString());
+        String dados = linhaTopo()
+                + centralizaAtributos(this.cod)
+                + centralizaAtributos(this.nome)
+                //                + centralizaDescricao(this.descricao)
+                + centralizaAtributos(this.tipo)
+                + centralizaAtributos(this.cor.toString())
+                + centralizaAtributos("Decomposição: " + this.decomposicao.toString())
+                + centralizaAtributos("Ataque: " + this.ataque.toString())
+                + linhaPe();
         return dados;
     }
-    
-    public String centralizaDescricao(String conteudo){
+
+    private String linhaTopo() {
+        StringBuilder sb = new StringBuilder(" ");
+        for (int i = 0; i < LARGURA-1; i++) {
+            sb.append("_");
+        }
+        sb.append("\n|");
+        for (int i = 0; i < LARGURA - 1; i++) {
+            sb.append(" ");
+        }
+        sb.append("|\n");
+        return sb.toString();
+    }
+
+    private String linhaPe() {
+        StringBuilder sb = new StringBuilder("|");
+        for (int i = 0; i < LARGURA - 1; i++) {
+            sb.append("_");
+        }
+        sb.append("|\n");
+        return sb.toString();
+    }
+
+    private String centralizaAtributos(String conteudo) {
         StringBuilder sb = new StringBuilder(conteudo);
-        int larguraCarta = 23;
-        Double espacos = (larguraCarta - conteudo.length())/2.0;
+        boolean par = conteudo.length() % 2 == 0;
+        Double espacos = (LARGURA - conteudo.length()) / 2.0;
         espacos = Math.floor(espacos);
         sb.insert(0, "|");
-        for (int i = 0; i < espacos; i++) {
+        for (int i = 0; i < (par ? espacos : espacos - 1); i++) {
             sb.insert(1, " ");
         }
         for (int i = 0; i < espacos; i++) {
             sb.append(" ");
         }
         sb.append("|\n");
-       return sb.toString();
+        return sb.toString();
+    }
+
+//    private String centralizaDescricao(String descricao) {
+//        StringBuilder sb = new StringBuilder(descricao);
+//        int larguraCarta = 23;
+//        if (descricao.length() > larguraCarta) {
+//            ArrayList<String> linhas = separaString(larguraCarta, descricao);
+//            sb = new StringBuilder("");
+//            for (String linha : linhas) {
+//                sb.append(centralizaDescricao(linha));
+//            }
+//        } else {
+//            return centralizaAtributos(descricao);
+//        }
+//        return sb.toString();
+//    }
+//    private String centralizaDescricao(String descricao) {
+//        StringBuilder sb = new StringBuilder(descricao);
+//        int larguraCarta = 23;
+//        if (descricao.length() > larguraCarta) {
+//            ArrayList<String> palavras = new ArrayList<>(Arrays.asList(descricao.split(" ")));
+//            ArrayList<String> linhas = new ArrayList<>();
+//
+//            sb = new StringBuilder("");
+//            for (String linha : linhas) {
+//                sb.append(centralizaDescricao(linha));
+//            }
+//        } else {
+//            return centralizaAtributos(descricao);
+//        }
+//        return sb.toString();
+//    }
+    private ArrayList<String> separaString(int tamanho, String texto) {
+        int linhas = (int) Math.ceil(descricao.length() / tamanho);
+        ArrayList<String> resultado = new ArrayList<>();
+        resultado.add(texto.substring(0, tamanho).trim());
+        for (int i = 1; i < linhas; i++) {
+            resultado.add(texto.substring(tamanho * i, ((tamanho * i) + tamanho) > texto.length() ? texto.length() : ((tamanho * i) + tamanho)).trim());
+        }
+        return resultado;
     }
 
 }
-        
-        
-        
 
 //
 //|----------------------|
@@ -370,4 +433,4 @@ public abstract class Carta {
 //| slkfjklfsjlkfjasklf  |
 //|      Tipo            |
 //|       Azul           |
- 
+

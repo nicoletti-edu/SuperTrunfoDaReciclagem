@@ -1,10 +1,10 @@
 package com.mycompany.supertrunfodareciclagem.util;
 
 public enum Cor {
-    VERDE("verde"), CINZA("cinza"), LARANJA("laranja"), VERMELHO("vermelho"),
-    AZUL("azul"), AMARELO("amarelo"), MARROM("marrom"), ROXO("roxo"),
-    BRANCO("branco"), PRETO("preto"), MAIOR("maior"), MENOR("menor"),
-    INDEFINIDA("indefinida");
+    VERDE("Verde"), CINZA("Cinza"), LARANJA("Laranja"), VERMELHO("Vermelho"),
+    AZUL("Azul"), AMARELO("Amarelo"), MARROM("Marrom"), ROXO("Roxo"),
+    BRANCO("Branco"), PRETO("Preto"), MAIOR("Maior"), MENOR("Menor"),
+    INDEFINIDA("Indefinida");
 
     // The string com o nome da cor.
     private final String cor;
