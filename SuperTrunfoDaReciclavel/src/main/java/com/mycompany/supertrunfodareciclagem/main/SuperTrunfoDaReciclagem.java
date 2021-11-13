@@ -220,7 +220,15 @@ public class SuperTrunfoDaReciclagem {
             this.jogadoresEmpatados = false;
         }
         if (resultado != null) {
-            System.out.println("------------------------------------------------------------------------" + resultado.toString() + "------------------------------------------------------------------------");
+            if (resultado == Status.GANHA) {
+                System.out.println("------------------------------------------------------------------------Ganhador da Rodada: " + this.jogadores[indiceVencedor].getNome() + "------------------------------------------------------------------------");
+            } else if (resultado == Status.PERDE) {
+                System.out.println("------------------------------------------------------------------------Ganhador da Rodada: " + this.jogadores[indiceVencedor].getNome() + "------------------------------------------------------------------------");
+
+            } else {
+                System.out.println("------------------------------------------------------------------------Turno Empatado------------------------------------------------------------------------");
+
+            }
         }
     }
 
@@ -268,7 +276,7 @@ public class SuperTrunfoDaReciclagem {
                     resultado = mesa.get(i).critReciclavel(mesa.get(i + 1));
                     if (resultado == Status.EMPATA) {
                         this.jogadoresEmpatados = true;
-                    } else {
+                    } else { 
                         switch (resultado) {
                             case PERDE:
                                 indiceVencedor = 1;
@@ -306,14 +314,33 @@ public class SuperTrunfoDaReciclagem {
             this.jogadoresEmpatados = false;
         }
         if (resultado != null) {
-            System.out.println("------------------------------------------------------------------------" + resultado.toString() + "------------------------------------------------------------------------");
+            if (resultado == Status.GANHA) {
+                System.out.println("------------------------------------------------------------------------Ganhador da Rodada: " + this.jogadores[indiceVencedor].getNome() + "------------------------------------------------------------------------");
+            } else if (resultado == Status.PERDE) {
+                System.out.println("------------------------------------------------------------------------Ganhador da Rodada: " + this.jogadores[indiceVencedor].getNome() + "------------------------------------------------------------------------");
+
+            } else {
+                System.out.println("------------------------------------------------------------------------Turno Empatado------------------------------------------------------------------------");
+
+            }
         }
-    } 
+    }
 
     private void faseRevelacao() {
         System.out.println("------------------------------------------------------------------------Fase revelação------------------------------------------------------------------------");
         int j = mesa.size() - jogadores.length; // pega as ultimas cartas do monte
-        for (int i = 0; i < jogadores.length; i++ ) {
+        for (int i = 0; i < jogadores.length; i++) {
+            if (i != proxJogador) {
+                System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + mesa.get(j).toString());
+            }
+            j++;
+        }
+    }
+
+    private void faseRevelacao(int k) {
+        System.out.println("------------------------------------------------------------------------Fase revelação------------------------------------------------------------------------");
+        int j = mesa.size() - jogadores.length; // pega as ultimas cartas do monte
+        for (int i = 0; i < jogadores.length; i++) {
             if (i != proxJogador) {
                 System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + mesa.get(j).toString());
             }
@@ -341,7 +368,7 @@ public class SuperTrunfoDaReciclagem {
                 System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
                 System.out.println(mesa.get(indice).toString());
                 this.fasePrincipal(this.escolhaDeCriterio(), 1);
-                this.faseRevelacao();
+                this.faseRevelacao(0);
             }
 
         }
@@ -366,14 +393,13 @@ public class SuperTrunfoDaReciclagem {
     }
 
     private Jogador ganhador() {
-        Jogador vencedor;
+        Jogador vencedor = null;
         for (Jogador j : this.jogadores) {
-            if (!j.temCartas()) {
-                vencedor = j; 
+            if (j.temCartas()) {
+                vencedor = j;
             }
-            return j;
         }
-        return null;
+        return vencedor;
     }
 
     public Jogador[] getJogadores() {
