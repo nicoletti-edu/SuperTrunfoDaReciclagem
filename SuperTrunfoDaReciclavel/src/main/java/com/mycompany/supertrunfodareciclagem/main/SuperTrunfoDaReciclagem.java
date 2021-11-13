@@ -17,20 +17,20 @@ public class SuperTrunfoDaReciclagem {
     private final Scanner sc = new Scanner(System.in);
     private Jogador[] jogadores;
     private ArrayList<Carta> mesa;
-    private int turno;
-    private int proxJogador;
+    private int turno, proxJogador, atualJogador;
     private boolean jogadoresEmpatados;
     private Random gerador;
 
     public static void main(String[] args) {
         int criterio;
+        Status status;
 
         SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem();
         while (!jogo.isFim()) {
             jogo.novaRodada();
             criterio = jogo.escolhaDeCriterio();
-            jogo.fasePrincipal(criterio, false);
-            jogo.faseRevelacao();
+            status = jogo.fasePrincipal(criterio, false);
+            jogo.faseRevelacao(status);
             jogo.desempate();
             jogo.fimDoTurno();
         }
@@ -141,7 +141,7 @@ public class SuperTrunfoDaReciclagem {
     }
 
     //Fase que faz comparação entre as cartas
-    private void fasePrincipal(int criterio, boolean empate) {
+    private Status fasePrincipal(int criterio, boolean empate) {
         if (!empate) {
             System.out.println("-- Início da fase principal --");
         } else {
@@ -218,38 +218,35 @@ public class SuperTrunfoDaReciclagem {
 
         }
         if (indiceVencedor != -1) {
+            atualJogador = proxJogador;
             proxJogador = indiceVencedor;
             this.jogadoresEmpatados = false;
         }
-        if (resultado != null) {
-            System.out.println("----------- " + resultado.toString() + " -----------");
-        }
+        return resultado;
     }
 
-    private void faseRevelacao() {
+    private void faseRevelacao(Status status) {
         System.out.println("------- Fase revelação -------");
+
         int j = mesa.size() - jogadores.length; // pega as ultimas cartas do monte
         for (int i = 0; i < jogadores.length; i++) {
-            if (i != proxJogador) {
+            if (i != atualJogador) {
                 System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + mesa.get(j).toString());
             }
             j++;
         }
-    }
-
-    private void faseRevelacao(int k) {
-        System.out.println("------------------------------------------------------------------------Fase revelação------------------------------------------------------------------------");
-        int j = mesa.size() - jogadores.length; // pega as ultimas cartas do monte
-        for (int i = 0; i < jogadores.length; i++) {
-            if (i != proxJogador) {
-                System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + mesa.get(j).toString());
+        if (status != null) {
+            if (status == Status.EMPATA) {
+                System.out.println("----------- Turno Empatado -----------");
+            } else {
+                System.out.println("----------- Vencedor da Rodada:" + jogadores[proxJogador].getNome() + " -----------");
             }
-            j++;
         }
     }
 
     private void desempate() {
         while (this.jogadoresEmpatados) {
+            Status status;
             int i;
             this.faseDeCompra();
 
@@ -267,8 +264,8 @@ public class SuperTrunfoDaReciclagem {
                 System.out.println("--------- Desempate ---------");
                 System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
                 System.out.println(mesa.get(indice).toString());
-                this.fasePrincipal(this.escolhaDeCriterio(), true);
-                this.faseRevelacao(0);
+                status = this.fasePrincipal(this.escolhaDeCriterio(), true);
+                this.faseRevelacao(status);
             }
         }
     }
