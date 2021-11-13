@@ -146,7 +146,7 @@ public class SuperTrunfoDaReciclagem {
     private void fasePrincipal(int criterio) {
         System.out.println("------------------------------------------------------------------------Início da fase principal------------------------------------------------------------------------");
         Status resultado = null;
-        int i = mesa.size() - 2;
+        int i = mesa.size() - this.jogadores.length;
         int indiceVencedor = -1;
         switch (criterio) {
             case 1:
@@ -308,7 +308,7 @@ public class SuperTrunfoDaReciclagem {
         if (resultado != null) {
             System.out.println("------------------------------------------------------------------------" + resultado.toString() + "------------------------------------------------------------------------");
         }
-    }
+    } 
 
     private void faseRevelacao() {
         System.out.println("------------------------------------------------------------------------Fase revelação------------------------------------------------------------------------");
@@ -369,7 +369,7 @@ public class SuperTrunfoDaReciclagem {
         Jogador vencedor;
         for (Jogador j : this.jogadores) {
             if (!j.temCartas()) {
-                vencedor = j;
+                vencedor = j; 
             }
             return j;
         }
