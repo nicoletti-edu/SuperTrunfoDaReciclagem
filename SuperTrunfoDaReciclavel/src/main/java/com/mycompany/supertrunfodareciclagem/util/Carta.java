@@ -302,9 +302,6 @@ public abstract class Carta {
     }
 
     public Status critReciclavel(Carta c) {
-        if (c == null) {
-            System.out.println("aqui");
-        }
         if (this.isReciclavel()) {
             if (c.isReciclavel()) {
                 return Status.EMPATA;
