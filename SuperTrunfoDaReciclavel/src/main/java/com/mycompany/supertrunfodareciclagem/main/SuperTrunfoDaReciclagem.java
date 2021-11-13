@@ -17,8 +17,8 @@ public class SuperTrunfoDaReciclagem {
     private final Scanner sc = new Scanner(System.in);
     private Jogador[] jogadores;
     private ArrayList<Carta> mesa;
-    private int turno;
-    private int proxJogador;
+    private ArrayList<Integer> indiceEmpatados;
+    private int turno, proxJogador, atualJogador;
     private boolean jogadoresEmpatados;
     private Random gerador;
 
@@ -33,6 +33,7 @@ public class SuperTrunfoDaReciclagem {
             jogo.faseRevelacao();
             jogo.desempate();
             jogo.fimDoTurno();
+            jogo.ValidaJogadores();
         }
         for (Jogador j : jogo.getJogadores()) {
             System.out.println("Nro da carta do jogador " + j.getNome() + " : " + j.numeroDeCartas());
@@ -47,6 +48,7 @@ public class SuperTrunfoDaReciclagem {
         turno = 0;
         proxJogador = 0;
         mesa = new ArrayList<>();
+        indiceEmpatados = new ArrayList<Integer>();
         inicia();
 
         //printa as cartas dos jogadores
@@ -107,7 +109,8 @@ public class SuperTrunfoDaReciclagem {
         for (Jogador j : jogadores) {
             System.out.println(j.getNome() + " : " + j.numeroDeCartas());
         }
-        this.faseDeCompra();
+        this.faseDeCompra(false);
+        System.out.println("");
         System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
         System.out.println(mesa.get(proxJogador).toString());
 
@@ -126,132 +129,159 @@ public class SuperTrunfoDaReciclagem {
     }
 
     //Outros jogadores compram a carta e "põe na mesa virado para baixo
-    public void faseDeCompra() {
-        for (int i = 0; i < jogadores.length; i++) {
-            mesa.add(jogadores[i].sacarCarta());
+    public void faseDeCompra(Boolean isDesempate) {
+        if (!isDesempate) {
+            for (int i = 0; i < jogadores.length; i++) {
+                mesa.add(jogadores[i].sacarCarta());
+            }
+        } else {
+            for (int i : indiceEmpatados) {
+                mesa.add(jogadores[i].sacarCarta());
+            }
         }
     }
 
     private boolean isFim() {
         boolean ret = false;
-        for (int i = 0; i < this.jogadores.length; i++) {
-            ret = ret ^ this.jogadores[i].temCartas(); //xor entre jogadores, se houver mais de um que tenha o baralho retornará false
+//        for (int i = 0; i < this.jogadores.length; i++) {
+//            ret = ret ^ this.jogadores[i].temCartas(); //xor entre jogadores, se houver mais de um que tenha o baralho retornará false
+//        }
+        if(this.jogadores.length == 1){
+            ret = true;
         }
         return ret;
     }
 
     //Fase que faz comparação entre as cartas
-    private void fasePrincipal(int criterio, boolean empate) {
-        if (!empate) {
+    private void fasePrincipal(int criterio, boolean isEmpate) {
+        if (!isEmpate) {
             System.out.println("-- Início da fase principal --");
         } else {
             System.out.println("--------- Desempate --------");
         }
         Status resultado = null;
-        int i = mesa.size() - this.jogadores.length;
-        int indiceVencedor = -1;
-        switch (criterio) {
-            case 1:
-                resultado = mesa.get(i).critCor(mesa.get(i + 1));
-                if (resultado == Status.EMPATA) {
-                    this.jogadoresEmpatados = true;
-                } else {
-                    switch (resultado) {
-                        case PERDE:
-                            indiceVencedor = 1;
-                            break;
-                        case GANHA:
-                            indiceVencedor = 0;
-                            break;
+        int i = mesa.size() - this.jogadores.length, indiceVencedor = -1;
+        for (int j = 0; j < Math.ceil(jogadores.length / 2); j++) {
+            switch (criterio) {
+                case 1:
+                    resultado = mesa.get(i).critCor(mesa.get(i + 1));
+                    if (resultado == Status.EMPATA) {
+                        indiceVencedor = -1;
+                        this.jogadoresEmpatados = true;
+                        if (!indiceEmpatados.contains(j)) {
+                            this.indiceEmpatados.add(j);
+                        }
+                        if (!indiceEmpatados.contains(j + 1)) {
+                            this.indiceEmpatados.add(j + 1);
+                        }
+                    } else {
+                        switch (resultado) {
+                            case PERDE:
+                                indiceVencedor = j + 1;
+                                break;
+                            case GANHA:
+                                indiceVencedor = j;
+                                break;
+                        }
                     }
-                }
 
-                break;
+                    break;
 
-            case 2:
-                resultado = mesa.get(i).critDecoposicao(mesa.get(i + 1));
-                if (resultado == Status.EMPATA) {
-                    this.jogadoresEmpatados = true;
-                } else {
-                    switch (resultado) {
-                        case PERDE:
-                            indiceVencedor = 1;
-                            break;
-                        case GANHA:
-                            indiceVencedor = 0;
-                            break;
+                case 2:
+                    resultado = mesa.get(i).critDecoposicao(mesa.get(i + 1));
+                    if (resultado == Status.EMPATA) {
+                        indiceVencedor = -1;
+                        this.jogadoresEmpatados = true;
+                        if (!indiceEmpatados.contains(j)) {
+                            this.indiceEmpatados.add(j);
+                        }
+                        if (!indiceEmpatados.contains(j + 1)) {
+                            this.indiceEmpatados.add(j + 1);
+                        }
+                    } else {
+                        switch (resultado) {
+                            case PERDE:
+                                indiceVencedor = j + 1;
+                                break;
+                            case GANHA:
+                                indiceVencedor = j;
+                                break;
+                        }
                     }
-                }
-                break;
 
-            case 3:
-                resultado = mesa.get(i).critReciclavel(mesa.get(i + 1));
-                if (resultado == Status.EMPATA) {
-                    this.jogadoresEmpatados = true;
-                } else {
-                    switch (resultado) {
-                        case PERDE:
-                            indiceVencedor = 1;
-                            break;
-                        case GANHA:
-                            indiceVencedor = 0;
-                            break;
+                    break;
+                case 3:
+                    resultado = mesa.get(i).critReciclavel(mesa.get(i + 1));
+                    if (resultado == Status.EMPATA) {
+                        indiceVencedor = -1;
+                        this.jogadoresEmpatados = true;
+                        if (!indiceEmpatados.contains(j)) {
+                            this.indiceEmpatados.add(j);
+                        }
+                        if (!indiceEmpatados.contains(j + 1)) {
+                            this.indiceEmpatados.add(j + 1);
+                        }
+                    } else {
+                        switch (resultado) {
+                            case PERDE:
+                                indiceVencedor = j + 1;
+                                break;
+                            case GANHA:
+                                indiceVencedor = j;
+                                break;
+                        }
                     }
-                }
-                break;
 
-            case 4:
-                resultado = mesa.get(i).critAtaque(mesa.get(i + 1));
-                if (resultado == Status.EMPATA) {
-                    this.jogadoresEmpatados = true;
-                } else {
-                    switch (resultado) {
-                        case PERDE:
-                            indiceVencedor = 1;
-                            break;
-                        case GANHA:
-                            indiceVencedor = 0;
-                            break;
+                    break;
+                case 4:
+                    resultado = mesa.get(i).critAtaque(mesa.get(i + 1));
+                    if (resultado == Status.EMPATA) {
+                        this.jogadoresEmpatados = true;
+                        indiceVencedor = -1;
+                        this.indiceEmpatados.add(j);
+                        this.indiceEmpatados.add(j + 1);
+                    } else {
+                        switch (resultado) {
+                            case PERDE:
+                                indiceVencedor = j + 1;
+                                break;
+                            case GANHA:
+                                indiceVencedor = j;
+                                break;
+                        }
                     }
-                }
-                break;
-
+                    break;
+            }
         }
         if (indiceVencedor != -1) {
+            atualJogador = proxJogador;
             proxJogador = indiceVencedor;
             this.jogadoresEmpatados = false;
-        }
-        if (resultado != null) {
-            System.out.println("----------- " + resultado.toString() + " -----------");
         }
     }
 
     private void faseRevelacao() {
         System.out.println("------- Fase revelação -------");
-        int j = mesa.size() - jogadores.length; // pega as ultimas cartas do monte
-        for (int i = 0; i < jogadores.length; i++) {
-            if (i != proxJogador) {
-                System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + mesa.get(j).toString());
-            }
-            j++;
-        }
-    }
 
-    private void faseRevelacao(int k) {
-        System.out.println("------------------------------------------------------------------------Fase revelação------------------------------------------------------------------------");
         int j = mesa.size() - jogadores.length; // pega as ultimas cartas do monte
         for (int i = 0; i < jogadores.length; i++) {
-            if (i != proxJogador) {
+            if (i != atualJogador) {
                 System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + mesa.get(j).toString());
             }
             j++;
         }
+        if (this.jogadoresEmpatados) {
+            System.out.println("----------- Turno Empatado -----------");
+        } else {
+            System.out.println("----------- Vencedor da Rodada:" + jogadores[proxJogador].getNome() + " -----------");
+        }
+
     }
 
     private void desempate() {
         while (this.jogadoresEmpatados) {
             int i;
-            this.faseDeCompra();
+            this.faseDeCompra(true);
 
             for (i = 0; i < mesa.size(); i++) {
                 Carta c;
@@ -268,7 +298,7 @@ public class SuperTrunfoDaReciclagem {
                 System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
                 System.out.println(mesa.get(indice).toString());
                 this.fasePrincipal(this.escolhaDeCriterio(), true);
-                this.faseRevelacao(0);
+                this.faseRevelacao();
             }
         }
     }
@@ -280,6 +310,7 @@ public class SuperTrunfoDaReciclagem {
                 j.adicionaCarta(c);
             }
         }
+        indiceEmpatados.removeAll(indiceEmpatados);
         mesa.removeAll(mesa);
     }
 
@@ -307,5 +338,25 @@ public class SuperTrunfoDaReciclagem {
 
     public void setJogadores(Jogador[] jogadores) {
         this.jogadores = jogadores;
+    }
+
+    private void ValidaJogadores() {
+        int i = 0;
+        ArrayList<Jogador> jogadoresValidos = new ArrayList<>();
+        Jogador[] novoJogadores;
+        for (Jogador j : jogadores) {
+            if (j.temCartas()) {
+                jogadoresValidos.add(j);
+            } else {
+                System.out.println("Jogador " + j.getNome() + " perdeu o jogo");
+                System.out.println("Turno: " + this.turno);
+            }
+        }
+        novoJogadores = new Jogador[jogadoresValidos.size()];
+        for (Jogador j : jogadoresValidos) {
+            novoJogadores[i] = j;
+            i++;
+        }
+        this.jogadores = novoJogadores;
     }
 }
