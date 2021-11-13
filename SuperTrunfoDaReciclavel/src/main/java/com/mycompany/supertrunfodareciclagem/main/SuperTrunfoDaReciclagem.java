@@ -148,7 +148,7 @@ public class SuperTrunfoDaReciclagem {
             System.out.println("--------- Desempate --------");
         }
         Status resultado = null;
-        int i = mesa.size() - 2;
+        int i = mesa.size() - this.jogadores.length;
         int indiceVencedor = -1;
         switch (criterio) {
             case 1:
@@ -237,6 +237,17 @@ public class SuperTrunfoDaReciclagem {
         }
     }
 
+    private void faseRevelacao(int k) {
+        System.out.println("------------------------------------------------------------------------Fase revelação------------------------------------------------------------------------");
+        int j = mesa.size() - jogadores.length; // pega as ultimas cartas do monte
+        for (int i = 0; i < jogadores.length; i++) {
+            if (i != proxJogador) {
+                System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + mesa.get(j).toString());
+            }
+            j++;
+        }
+    }
+
     private void desempate() {
         while (this.jogadoresEmpatados) {
             int i;
@@ -257,7 +268,7 @@ public class SuperTrunfoDaReciclagem {
                 System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
                 System.out.println(mesa.get(indice).toString());
                 this.fasePrincipal(this.escolhaDeCriterio(), true);
-                this.faseRevelacao();
+                this.faseRevelacao(0);
             }
         }
     }
@@ -281,14 +292,13 @@ public class SuperTrunfoDaReciclagem {
     }
 
     private Jogador ganhador() {
-        Jogador vencedor;
+        Jogador vencedor = null;
         for (Jogador j : this.jogadores) {
-            if (!j.temCartas()) {
+            if (j.temCartas()) {
                 vencedor = j;
             }
-            return j;
         }
-        return null;
+        return vencedor;
     }
 
     public Jogador[] getJogadores() {

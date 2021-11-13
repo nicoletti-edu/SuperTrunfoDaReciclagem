@@ -50,6 +50,12 @@ public class Jogador {
     }
 
     public boolean temCartas() {
-        return !cartas.isEmpty();
+        boolean temcarta;
+        if(cartas.isEmpty()){
+            temcarta = false;
+        }else{
+            temcarta = true;
+        }
+        return temcarta;
     }
 }
