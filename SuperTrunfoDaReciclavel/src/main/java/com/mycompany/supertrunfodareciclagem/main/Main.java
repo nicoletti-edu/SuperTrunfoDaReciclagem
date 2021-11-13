@@ -16,7 +16,7 @@ public class Main {
             jogo.novaRodada();
             criterio = jogo.escolhaDeCriterio();
             jogo.fasePrincipal(criterio, false);
-            jogo.faseRevelacao();
+            jogo.faseRevelacao(false);
             jogo.desempate();
             jogo.fimDoTurno();
             jogo.ValidaJogadores();

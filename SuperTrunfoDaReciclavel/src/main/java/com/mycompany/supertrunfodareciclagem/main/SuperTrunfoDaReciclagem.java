@@ -127,6 +127,7 @@ public class SuperTrunfoDaReciclagem {
             }
         } else {
             for (int i : indiceEmpatados) {
+                i = i % jogadores.length;
                 mesa.add(jogadores[i].sacarCarta());
             }
         }
@@ -142,25 +143,34 @@ public class SuperTrunfoDaReciclagem {
 
     //Fase que faz comparação entre as cartas
     public void fasePrincipal(int criterio, boolean isEmpate) {
+        int quantidadeJogadores;
         if (!isEmpate) {
+            quantidadeJogadores = this.jogadores.length;
             System.out.println("-- Início da fase principal --");
         } else {
             System.out.println("--------- Desempate --------");
+            quantidadeJogadores = this.indiceEmpatados.size();
         }
-        int cartaAtual = mesa.size() - this.jogadores.length, indiceVencedor;
+        this.indiceEmpatados.clear();
+        this.jogadoresEmpatados = false;
+        int cartaAtual = mesa.size() - quantidadeJogadores, indiceVencedor;
         int proximaCarta = cartaAtual + 1;
-        for (int j = 0; j < jogadores.length-1; j++) {
+        for (int j = 0; j < quantidadeJogadores - 1; j++) {
             cartaAtual = comparaCartas(criterio, cartaAtual, proximaCarta + j);
             if (cartaAtual == -1) {
                 cartaAtual = proximaCarta;
             }
         }
+        atualJogador = proxJogador;
         if (!this.jogadoresEmpatados) {
+            if (isEmpate) {
+                cartaAtual = indiceEmpatados.get(cartaAtual % 4);
+            }
             indiceVencedor = cartaAtual;
-            atualJogador = proxJogador;
             proxJogador = indiceVencedor;
             this.jogadoresEmpatados = false;
         }
+
     }
 
     public int comparaCartas(int criterio, int cartaUmIndice, int cartaDoisIndice) {
@@ -216,11 +226,16 @@ public class SuperTrunfoDaReciclagem {
         return indiceVencedor;
     }
 
-    public void faseRevelacao() {
+    public void faseRevelacao(boolean isEmpate) {
+        int quantidadeJogadores;
         System.out.println("------- Fase revelação -------");
-
-        int j = mesa.size() - jogadores.length; // pega as ultimas cartas do monte
-        for (int i = 0; i < jogadores.length; i++) {
+        if (isEmpate) {
+            quantidadeJogadores = this.indiceEmpatados.size();
+        }else{
+            quantidadeJogadores = jogadores.length;
+        }
+        int j = mesa.size() - quantidadeJogadores; // pega as ultimas cartas do monte
+        for (int i = 0; i < quantidadeJogadores; i++) {
             if (i != atualJogador) {
                 System.out.println("Carta do jogador " + jogadores[i].getNome() + " : \n" + mesa.get(j).toString());
             }
@@ -254,7 +269,7 @@ public class SuperTrunfoDaReciclagem {
                 System.out.println("Carta do jogador " + jogadores[proxJogador].getNome() + " : \n");
                 System.out.println(mesa.get(indice).toString());
                 this.fasePrincipal(this.escolhaDeCriterio(), true);
-                this.faseRevelacao();
+                this.faseRevelacao(true);
             }
         }
     }
