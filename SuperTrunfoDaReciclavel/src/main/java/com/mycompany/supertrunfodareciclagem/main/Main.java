@@ -7,10 +7,27 @@ import com.mycompany.supertrunfodareciclagem.util.Jogador;
  * @author nicoletti.edu
  */
 public class Main {
-    public static void main(String[] args) {
-        int criterio;
 
-        SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem();
+    public static void main(String[] args) {
+
+        Menu menu = new Menu();
+        int escolha = menu.mostraMenu();
+
+        switch (escolha) {
+            case 1:
+                iniciaJogo(false);
+                break;
+            case 2:
+                iniciaJogo(true);
+                break;
+            case 3:
+                System.exit(0);
+        }
+    }
+
+    private static void iniciaJogo(boolean simulacao) {
+        int criterio;
+        SuperTrunfoDaReciclagem jogo = new SuperTrunfoDaReciclagem(simulacao);
         jogo.inicia();
         while (!jogo.isFim()) {
             jogo.novaRodada();
