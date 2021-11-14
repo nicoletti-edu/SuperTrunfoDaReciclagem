@@ -12,6 +12,7 @@ public abstract class Carta {
     private Cor cor;
     private Double decomposicao;
     private Integer ataque;
+    private int indiceJogador;
     private static final int LARGURA = 29; // TEM QUE SER IMPAR ;)
 
     public Carta(String[] dados) {
@@ -80,6 +81,14 @@ public abstract class Carta {
 
     public void setAtaque(int ataque) {
         this.ataque = ataque;
+    }
+
+    public int getIndiceJogador() {
+        return indiceJogador;
+    }
+
+    public void setIndiceJogador(int indiceJogador) {
+        this.indiceJogador = indiceJogador;
     }
 
     public Status critCor(Carta c) {
@@ -288,9 +297,6 @@ public abstract class Carta {
                 return Status.PERDE;
             }
         } else {
-            if (this.decomposicao == null || c == null) {
-                System.out.println("aqui");
-            }
             if (this.decomposicao < c.getDecomposicao()) {
                 return Status.GANHA;
             } else if (this.decomposicao > c.getDecomposicao()) {
