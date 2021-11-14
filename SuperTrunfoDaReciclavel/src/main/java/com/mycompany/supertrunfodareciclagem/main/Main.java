@@ -19,7 +19,7 @@ public class Main {
             jogo.faseRevelacao(false);
             jogo.desempate();
             jogo.fimDoTurno();
-            jogo.ValidaJogadores();
+            jogo.validaJogadores();
         }
         for (Jogador j : jogo.getJogadores()) {
             System.out.println("Nro da carta do jogador " + j.getNome() + " : " + j.numeroDeCartas());
