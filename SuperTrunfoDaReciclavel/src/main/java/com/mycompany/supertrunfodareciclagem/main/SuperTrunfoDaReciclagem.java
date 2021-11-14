@@ -21,15 +21,17 @@ public class SuperTrunfoDaReciclagem {
     private ArrayList<Integer> indiceEmpatados;
     private int turno, proxJogador, atualJogador;
     private boolean jogadoresEmpatados;
+    private boolean simulacao;
     private Random gerador;
 
-    public SuperTrunfoDaReciclagem() {
+    public SuperTrunfoDaReciclagem(boolean sim) {
         this.gerador = new Random();
         this.turno = 0;
         this.proxJogador = 0;
         this.mesa = new ArrayList<>();
         this.monte = new ArrayList<>();
         this.indiceEmpatados = new ArrayList<>();
+        this.simulacao = sim;
     }
 
     public int getTurno() {
@@ -46,6 +48,14 @@ public class SuperTrunfoDaReciclagem {
 
     public void setJogadores(Jogador[] jogadores) {
         this.jogadores = jogadores;
+    }
+
+    public boolean isSimulacao() {
+        return simulacao;
+    }
+
+    public void setSimulacao(boolean simulacao) {
+        this.simulacao = simulacao;
     }
 
     /**
@@ -116,7 +126,17 @@ public class SuperTrunfoDaReciclagem {
         System.out.println("2.Decomposição. |");
         System.out.println("3.Reciclavel. |");
         System.out.println("4.Ataque.\n");
-        escolha = gerador.nextInt(3) + 1;
+        if (this.simulacao) {
+            escolha = gerador.nextInt(3) + 1;
+        } else {
+            do {
+                escolha = sc.nextInt();
+                if (escolha < 1 || escolha > 4) {
+                    System.out.println("Opção Inválida!");
+                }
+            } while (escolha < 1 || escolha > 4);
+
+        }
         System.out.println("Criterio escolhido: " + escolha);
         return escolha;
     }
@@ -135,7 +155,7 @@ public class SuperTrunfoDaReciclagem {
                 Carta carta = jogadores[i].sacarCarta();
                 if (carta != null) {
                     this.mesa.add(carta);
-                }else{
+                } else {
                     System.out.println("Jogador " + jogadores[i].getNome() + " sem cartas!");
                 }
             }
@@ -317,10 +337,10 @@ public class SuperTrunfoDaReciclagem {
         }
         novoJogadores = new Jogador[jogadoresValidos.size()];
         for (Jogador j : jogadoresValidos) {
-            if(j.getIndice() == proxJogador){
+            if (j.getIndice() == proxJogador) {
                 proxJogador = i;
             }
-            if(j.getIndice() == atualJogador){
+            if (j.getIndice() == atualJogador) {
                 atualJogador = i;
             }
             j.setIndice(i);
